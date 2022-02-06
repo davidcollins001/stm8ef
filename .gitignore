@@ -1,1 +1,4 @@
 out/
+target
+*~
+*.sw[a-z]

@@ -57,6 +57,7 @@ defaults105:
 
 term:
 	$(E4THCOM) -t stm8ef -p .:lib $(TERM_FLAGS) -d $(TERM_PORT) -b B$(TERM_BAUD)
+	#  python -m serial.tools.miniterm --raw /dev/ttyU0
 
 else
 include forth.mk

@@ -1125,9 +1125,15 @@
 ```
 
 ```
-;       VARIABLE        ( -- ; <string> )
+;       VARIABLE        ( u -- ; <string> )
 ;       Compile a new variable
-;       initialized to 0.
+;       initialized to tos
+```
+
+```
+;       2VARIABLE        ( d -- ; <string> )
+;       Compile a new variable
+;       initialized to tos
 ```
 
 ```

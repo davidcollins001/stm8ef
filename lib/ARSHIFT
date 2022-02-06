@@ -1,0 +1,17 @@
+\ STM8eForth : ARSHIFT                                              TG9541-210301
+\ refer to github.com/TG9541/stm8ef/blob/master/LICENSE.md
+
+: ARSHIFT ( u n - u )  \ arithmetic shift right
+  [ $5C  C,  \     INCW    X
+    $F6  C,  \     LD      A,(X)
+    $5C  C,  \     INCW    X
+    $4D  C,  \     TNZ     A
+    $2706 ,  \     JREQ    1$
+    $59  C,  \ 2$: SRAW    X
+    $4A  C,  \     DEC     A
+    $26FA ,  \     JRNE    2$
+    $51  C,  \     EXGW X,Y
+    $FF  C,  \     LDW (X),Y
+             \ 1$:
+ ]
+;

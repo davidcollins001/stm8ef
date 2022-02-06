@@ -1,0 +1,12 @@
+\ STM8eForth : SHL                                              TG9541-210301
+\ refer to github.com/TG9541/stm8ef/blob/master/LICENSE.md
+
+: SHL ( n - n ) \ logical left shift
+  [
+    $9093 ,  \     LDW     Y,X
+    $FE  C,  \     LDW     X,(X)
+    $59  C,  \     RLCW    X
+    $51  C,  \     EXGW X,Y
+    $FF  C,  \     LDW (X),Y
+  ]
+  ;

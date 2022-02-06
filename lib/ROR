@@ -1,0 +1,37 @@
+\ STM8eForth : ROR                                              TG9541-210301
+\ refer to github.com/TG9541/stm8ef/blob/master/LICENSE.md
+
+\ : ROR ( n c - n )  \ shift n right c times
+\   [ $5C  C,  \     INCW    X
+\     $F6  C,  \     LD      A,(X)
+\     $5C  C,  \     INCW    X
+\     $4D  C,  \     TNZ     A
+\     $2711 ,  \     JREQ    1$
+\
+\     $9093 ,  \     LDW     Y,X
+\     $FE  C,  \     LDW     X,(X)
+\     $9066 ,  \     RRC     (1,Y)  ; ignore result, set carry flag
+\     $01  C,
+\
+\     $56  C,  \ 2$: RRCW    X
+\     $4A  C,  \     DEC     A
+\     $26FA ,  \     JRNE    2$
+\
+\     $51  C,  \     EXGW X,Y
+\     $FF  C,  \     LDW (X),Y
+\              \ 1$:
+\  ]
+\  ;
+
+: ROR ( n - n )  \ rotate bits right
+  [
+    $9093 ,  \     LDW     Y,X
+    $FE  C,  \     LDW     X,(X)
+    $9066 ,  \     RRC     (1,Y)  ; ignore result, set carry flag
+    $01  C,
+    $56  C,  \     RRCW    X
+    $51  C,  \     EXGW X,Y
+    $FF  C,  \     LDW (X),Y
+ ]
+;
+

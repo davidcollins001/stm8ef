@@ -105,6 +105,7 @@
         UNLINK_SPACE     = 2    ; "SPACE"
         UNLINK_DECIM     = 2    ; "DECIMAL"
         UNLINK_VARIA     = 2    ; "VARIABLE"
+        ; UNLINK_DVARI     = 2    ; "2VARIABLE"
         UNLINK_ALLOT     = 2    ; "ALLOT"
         UNLINK_NEGAT     = 2    ; "NEGATE"
         UNLINK_UNTIL     = 2    ; "UNTIL"

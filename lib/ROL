@@ -1,0 +1,36 @@
+\ STM8eForth : ROL                                              TG9541-210301
+\ refer to github.com/TG9541/stm8ef/blob/master/LICENSE.md
+
+\ : ROL ( n - n )  \ logical rotate left
+\ 	1
+\   [ $5C  C,  \     INCW    X
+\     $F6  C,  \     LD      A,(X)
+\     $5C  C,  \     INCW    X
+\     $4D  C,  \     TNZ     A
+\     $2710 ,  \     JREQ    1$
+\
+\     $9093 ,  \     LDW     Y,X
+\     $FE  C,  \     LDW     X,(X)
+\     $9079 ,  \     RLC     (Y)  ; ignore result, set carry flag
+\
+\     $59  C,  \ 2$: RLCW    X
+\     $4A  C,  \     DEC     A
+\     $26FA ,  \     JRNE    2$
+\
+\     $51  C,  \     EXGW X,Y
+\     $FF  C,  \     LDW (X),Y
+\              \ 1$:
+\  ]
+\ ;
+
+: ROL ( n - n )  \ rotate bits left
+  [
+    $9093 ,  \     LDW     Y,X
+    $FE  C,  \     LDW     X,(X)
+    $9079 ,  \     RLC     (Y)  ; ignore result, set carry flag
+    $59  C,  \     RLCW    X
+    $51  C,  \     EXGW X,Y
+    $FF  C,  \     LDW (X),Y
+ ]
+;
+

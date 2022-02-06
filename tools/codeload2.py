@@ -270,11 +270,22 @@ def upload(path):
                     except:
                         error('could not upload file', line, path, lineNr)
                     continue
-                if len(line) > 80:
+                if len(line) > 90:
                     raise ValueError('Line is too long: %s' % (line))
 
-                result = CN.transfer(line)
-                if result != 'ok':
+                for _ in range(3):
+                    if line == 'break':
+                        import pdb; pdb.set_trace()  # noqa
+                        break
+                    else:
+                        result = CN.transfer(line)
+                        if result != 'ok':
+                            import time
+                            time.sleep(0.5)
+                        else:
+                            break
+                else:
+                    print("failed to upload: ", line)
                     raise ValueError('error %s' % result)
 
         except ValueError as err:

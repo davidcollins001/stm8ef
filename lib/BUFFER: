@@ -1,0 +1,4 @@
+\ STM8eForth : BUFFER:                                              TG9541-210301
+
+: BUFFER: ( n name -- )  \ create n byte buffer: 8 buffer: arr
+  variable ( name n ) allot ;

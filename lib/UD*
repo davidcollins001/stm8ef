@@ -1,0 +1,12 @@
+\ UD*, UD/             double maths utility word
+
+: UD* ( ud u -- ud )
+  swap over um* >r >r um* r> + r> drop ;
+
+: UD/ ( ud u -- ud )
+  ( ul uh u ) dup rot swap
+  0 swap ( ul u uh 0 u ) um/mod >r
+  swap ( ul r u ) um/mod
+  nip r>
+  ;
+

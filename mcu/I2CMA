@@ -60,7 +60,7 @@
 
 NVM
 
-VARIABLE I2CMA 6 ALLOT   \ the register file
+0 VARIABLE I2CMA 6 ALLOT   \ the register file
 
 \ start the sequence by enabling interrupts and setting I2C_CR2 bit0 (START)
 : I2S ( c -- ) \ start i2C write/read - user code sets T/RCOUNT, T/RPOINT
@@ -181,6 +181,32 @@ VARIABLE I2CMA 6 ALLOT   \ the register file
 
 WIPE
 
+\res export I2C_CR1 I2C_CR2
+\res export I2C_FREQR I2C_OARL I2C_OARH
+\res export I2C_CCRL I2C_CCRH I2C_TRISER
+
+\ temporary words
+#require ]B!
+#require ]C!
+
+nvm
+
+\ initialize peripheral - init values by @eelkhoorn
+: I2I ( -- )
+  [ 0 I2C_CR1 0    ]B!  \ I2C peripheral disable
+  [ 1 I2C_CR2 7    ]B!  \ SWRST (in case I2C peripheral is in slave mode)
+  [ 0 I2C_CR2      ]C!  \ POS "Method 1"
+  [ 1 I2C_FREQR 4  ]B!  \ CPU freq 16 MHz
+  \ [ 0 I2C_CCRH 6 ]B!    \ normal mode
+  \ [ $50 I2C_CCRL ]C!    \ i2c freq 100 kHz, CCR = f.master/(2 f.i2c)
+  [ $80 I2C_CCRH   ]C!  \ fast mode
+  [ $E  I2C_CCRL   ]C!  \ I2C freq 381kHz (table 91)
+  [ 17  I2C_TRISER ]C!  \ TRISER = CPU freq in MHz + 1
+  [ 1   I2C_CR1 0  ]B!  \ Peripheral enable
+;
+
+ram
+
 \\ Example: Simple I2C EEPROM access and I2C scanner
 
 \res MCU: STM8S103
@@ -205,8 +231,8 @@ I2CMA 6 + CONSTANT RPOINT  \ points to RX buffr
 
 NVM
 
-VARIABLE EADDR
-VARIABLE BUFFER 6 ALLOT
+0 VARIABLE EADDR
+0 VARIABLE BUFFER 6 ALLOT
 
 \ initialize peripheral - init values by @eelkhoorn
 : I2I ( -- )

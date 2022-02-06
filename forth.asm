@@ -1409,6 +1409,21 @@ ULESS:
         LDW     (X),Y
         RET
 
+
+;       U<=      ( u u -- t )    ( TOS STM8: -- Y,Z,N )
+;       Unsigned compare of top two items.
+
+        HEADER  ULEEQ "U<="
+ULEEQ:
+        CLR     A
+        CALLR   YTEMPCMP
+        JRUGE   1$
+        CPL     A
+1$:     LD      YL,A
+        LD      YH,A
+        LDW     (X),Y
+        RET
+
         .ifeq   BOOTSTRAP
 ;       <       ( n1 n2 -- t )
 ;       Signed compare of top two items.
@@ -3685,15 +3700,19 @@ DOCON:
         .endif
 
         .ifne   HAS_VARIABLE
-;       VARIABLE        ( -- ; <string> )
+;       VARIABLE        ( u -- ; <string> )
 ;       Compile a new variable
-;       initialized to 0.
+;       initialized to tos
 
         HEADER  VARIA "VARIABLE"
 VARIA:
         CALLR   CREAT
-        CALL    ZERO
-        .ifne   HAS_CPNVM
+        ; CALL    ZERO
+        ; LDW     Y,X
+        ; LDW     Y,(Y)           ;
+        ; CALL    YSTOR           ; needed?
+        JP      STORE
+        .ifne   HAS_CPNVM       ;
         TNZ     USRCP
         JRPL    1$              ; NVM: allocate space in RAM
         DoLitW  DOVARPTR        ; overwrite call address "DOVAR" with "DOVARPTR"
@@ -3701,15 +3720,39 @@ VARIA:
         CALL    CELLM
         CALL    STORE
         LDW     Y,USRVAR
-        LDW     (X),Y           ; overwrite ZERO with RAM address for COMMA
+        LDW     (X),Y           ; overwrite tos with RAM address for COMMA
         DoLitC  2               ; Allocate space for variable in RAM
         CALLR   ALLOT
         .endif
-1$:     JP      COMMA
+1$:     JP      COMMA           ; store tos in new variable
         .endif
 
+         ; .ifne   HAS_VARIABLE
+ ; ;       2VARIABLE        ( d -- ; <string> )
+ ; ;       Compile a new variable
+ ; ;       initialized to tos
 
-        .ifne   HAS_VARIABLE
+         ; HEADER  DVARI "2VARIABLE"
+ ; DVARI:
+         ; CALLR   CREAT
+         ; .ifne   HAS_CPNVM
+         ; TNZ     USRCP
+         ; JRPL    1$              ; NVM: allocate space in RAM
+         ; DoLitW  DOVARPTR        ; overwrite call address "DOVAR" with "DOVARPTR"
+         ; CALL    HERE
+         ; CALL    CELLM
+         ; CALL    STORE
+         ; LDW     Y,USRVAR
+         ; LDW     (X),Y           ; overwrite ZERO with RAM address for COMMA
+         ; DoLitC  4               ; Allocate space for variable in RAM
+         ; CALLR   ALLOT
+         ; .endif
+ ; 1$:     CALL    SWAPP
+         ; JP      COMMA           ; store tos in new variable
+         ; JP      COMMA
+         ; .endif
+
+.ifne   HAS_VARIABLE
 ;       ALLOT   ( n -- )
 ;       Allocate n bytes to code DICTIONARY.
 

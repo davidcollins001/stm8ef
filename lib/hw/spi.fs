@@ -2,8 +2,17 @@
 \ derived from al177/stm8ef/HC12/boardcore.inc
 \ refer to github.com/TG9541/stm8ef/blob/master/LICENSE.md
 
+\ non-e4thcom / codeload.py: remove the following lines...
+\res MCU: STM8S103
+\res export SPI_CR1
+\res export SPI_CR2
+\res export SPI_SR
+\res export SPI_DR
+
 #require ]C!
 #require ]B!
+
+NVM
 
 \ Init and enable SPI
 : SPIon ( baud -- )
